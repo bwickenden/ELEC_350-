@@ -1,0 +1,62 @@
+this file contains the 15 points as well as a focus on the task. if you dont need to look at the 15 points, skip to "possible threads"
+
+
+from the main DLE resource, i have sumarised the 15 points as such:
+
+1. on the LCD (at a fixed rate): Temperature (deg C), Pressure (mbar), Light levels (adc)
+determined by timer (default 15 seconds) [10 marks, required]
+
+2. log date, time, and DATA, to internal memory (minimum 120 saved samples) [4 marks]
+
+3. use push switches to set data/time [4 marks]
+
+4. when full, the oldest sample is overwritten (fifo circular buffer) [4 marks]
+
+5. write in C++ [0 marks, required]
+
+6. write to minimise power consumption [4 marks]
+
+7. using PuTTY and the protocol (page 5 from dle), comunicate with board to: read DATA, delete DATA, start/stop sampling,
+specify date/time, turn debug logging on/off (see 14) [10 marks]
+
+8.seriel communications must be in a seperate thread as nt to block or interupt sampling,
+but must remain responsive throughout lifetime of the application [0 marks, required]
+
+9. access the board over a network connection (web page) and display current DATA, date, and time.
+this must not block the other operations of the board. [15 marks]
+
+10. mitigate dead-locks and thread starvation (suggestion: timeout with status check, watchdog timer) [15 marks]
+
+11. LCD driver code in a seperate object [10 marks] (REMOVED FROM SPECIFICATION)
+
+12. software to conform to Object Orientated design unless inapropriate [4 marks]
+
+13. indent and comment code at all levels to the extent it is appropriate [10 marks]
+
+14. when enabled (see 7), additional data shall be logged to the seriel interface to evidence other requirements.
+also use red and yellow LEDs if appropriate. [10 marks]
+
+15. when inserted, all past records for the day shall be logged to a FAT formatted SD card.
+pressing the blue USER button on the board shall unmount the card, the green LED indicating when it is safe to remove. [10 marks]
+
+
+
+possible threads:
+
+the highest priority thead needs to be sampling, the rate deermined by a time.
+  the sampling thread needs to log: pressure, temperature, and light.
+  
+when logging the data, it also needs to include the date and time along with this DATA.
+  data logging could potentially be done at the same time as LCD displaying.
+  
+  
+we dont need to constantly save to the SD like default code does, we only need to do it when we hit the USER button before it unmounts
+  (button -> save to SD -> unmount -> green led)
+  
+  
+as the unmounting of the SD is controlled by the USER button, that means we have both user switches to control the date and time setting.
+  one switch to control the selected position
+  one switch to alter the selected position
+  
+  
+to keep better track of time, the top line of the LCD should display date and time, while the bottom row alternated between the three values.
